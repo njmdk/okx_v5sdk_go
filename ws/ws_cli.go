@@ -53,7 +53,8 @@ type WsClient struct {
 	isStarted   bool //防止重复启动和关闭
 	dailTimeout time.Duration
 
-	Debug bool //控制日志输出 true:输出
+	Debug       bool //控制日志输出 true:输出
+	IsConnected bool
 }
 
 /*
@@ -234,6 +235,7 @@ func (a *WsClient) Start() error {
 		go a.receive()
 		go a.work()
 		a.isStarted = true
+		a.IsConnected = true
 		log.Println("客户端已启动!", a.WsEndPoint)
 		return nil
 	}
@@ -669,6 +671,7 @@ func (a *WsClient) Stop() error {
 
 	if a.conn != nil {
 		a.conn.Close()
+		a.conn = nil
 	}
 	close(a.errCh)
 	close(a.sendCh)
@@ -680,6 +683,7 @@ func (a *WsClient) Stop() error {
 	}
 
 	log.Println("ws客户端退出!")
+	a.IsConnected = false
 	return nil
 }
 
@@ -720,11 +724,11 @@ func (a *WsClient) AddErrMsgHook(fn ReceivedDataCallback) error {
 /*
 判断连接是否存活
 */
-func (a *WsClient) IsAlive() bool {
+func (a *WsClient) IsAlive(timeout int) bool {
 	res := false
 	if a.conn == nil {
 		return res
 	}
-	res, _, _ = a.Ping(500)
+	res, _, _ = a.Ping(timeout)
 	return res
 }

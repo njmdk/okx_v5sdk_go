@@ -28,8 +28,8 @@ func (a *WsClient) Ping(timeOut ...int) (res bool, detail *ProcessDetail, err er
 		EndPoint: a.WsEndPoint,
 	}
 
-	ctx := context.Background()
-	ctx, _ = context.WithTimeout(ctx, time.Duration(tm)*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(tm)*time.Millisecond)
+	defer cancel()
 	ctx = context.WithValue(ctx, "detail", detail)
 	msg, err := a.process(ctx, wImpl.EVENT_PING, nil)
 	if err != nil {
@@ -109,8 +109,8 @@ func (a *WsClient) Login(apiKey, secKey, passPhrase string, timeOut ...int) (res
 		EndPoint: a.WsEndPoint,
 	}
 
-	ctx := context.Background()
-	ctx, _ = context.WithTimeout(ctx, time.Duration(tm)*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(tm)*time.Millisecond)
+	defer cancel()
 	ctx = context.WithValue(ctx, "detail", detail)
 
 	msg, err := a.process(ctx, wImpl.EVENT_LOGIN, req)
@@ -332,8 +332,8 @@ func (a *WsClient) Subscribe(param map[string]string, timeOut ...int) (res bool,
 		EndPoint: a.WsEndPoint,
 	}
 
-	ctx := context.Background()
-	ctx, _ = context.WithTimeout(ctx, time.Duration(tm)*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(tm)*time.Millisecond)
+	defer cancel()
 	ctx = context.WithValue(ctx, "detail", detail)
 
 	msg, err := a.process(ctx, evtid, req)
@@ -383,8 +383,8 @@ func (a *WsClient) UnSubscribe(param map[string]string, timeOut ...int) (res boo
 		EndPoint: a.WsEndPoint,
 	}
 
-	ctx := context.Background()
-	ctx, _ = context.WithTimeout(ctx, time.Duration(tm)*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(tm)*time.Millisecond)
+	defer cancel()
 	ctx = context.WithValue(ctx, "detail", detail)
 	msg, err := a.process(ctx, evtid, req)
 	if err != nil {
@@ -428,8 +428,8 @@ func (a *WsClient) Jrpc(id, op string, params []map[string]interface{}, timeOut 
 		EndPoint: a.WsEndPoint,
 	}
 
-	ctx := context.Background()
-	ctx, _ = context.WithTimeout(ctx, time.Duration(tm)*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(tm)*time.Millisecond)
+	defer cancel()
 	ctx = context.WithValue(ctx, "detail", detail)
 	msg, err := a.process(ctx, evtid, req)
 	if err != nil {
@@ -467,8 +467,8 @@ func (a *WsClient) PubChannel(evtId wImpl.Event, op string, params []map[string]
 		Args: params,
 	}
 
-	ctx := context.Background()
-	ctx, _ = context.WithTimeout(ctx, time.Duration(tm)*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(tm)*time.Millisecond)
+	defer cancel()
 	msg, err = a.process(ctx, evtId, req)
 	if err != nil {
 		res = false
