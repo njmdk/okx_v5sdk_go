@@ -7,7 +7,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"strconv"
 	"strings"
@@ -16,8 +16,9 @@ import (
 )
 
 /*
- Get a epoch time
-  eg: 1521221737
+Get a epoch time
+
+	eg: 1521221737
 */
 func EpochTime() string {
 	millisecond := time.Now().UnixNano() / 1000000
@@ -28,13 +29,14 @@ func EpochTime() string {
 }
 
 /*
- signing a message
- using: hmac sha256 + base64
-  eg:
-    message = Pre_hash function comment
-    secretKey = E65791902180E9EF4510DB6A77F6EBAE
+signing a message
+using: hmac sha256 + base64
 
-  return signed string = TO6uwdqz+31SIPkd4I+9NiZGmVH74dXi+Fd5X0EzzSQ=
+	eg:
+	  message = Pre_hash function comment
+	  secretKey = E65791902180E9EF4510DB6A77F6EBAE
+
+	return signed string = TO6uwdqz+31SIPkd4I+9NiZGmVH74dXi+Fd5X0EzzSQ=
 */
 func HmacSha256Base64Signer(message string, secretKey string) (string, error) {
 	mac := hmac.New(sha256.New, []byte(secretKey))
@@ -46,21 +48,22 @@ func HmacSha256Base64Signer(message string, secretKey string) (string, error) {
 }
 
 /*
- the pre hash string
-  eg:
-    timestamp = 2018-03-08T10:59:25.789Z
-    method  = POST
-    request_path = /orders?before=2&limit=30
-    body = {"product_id":"BTC-USD-0309","order_id":"377454671037440"}
+the pre hash string
 
-  return pre hash string = 2018-03-08T10:59:25.789ZPOST/orders?before=2&limit=30{"product_id":"BTC-USD-0309","order_id":"377454671037440"}
+	eg:
+	  timestamp = 2018-03-08T10:59:25.789Z
+	  method  = POST
+	  request_path = /orders?before=2&limit=30
+	  body = {"product_id":"BTC-USD-0309","order_id":"377454671037440"}
+
+	return pre hash string = 2018-03-08T10:59:25.789ZPOST/orders?before=2&limit=30{"product_id":"BTC-USD-0309","order_id":"377454671037440"}
 */
 func PreHashString(timestamp string, method string, requestPath string, body string) string {
 	return timestamp + strings.ToUpper(method) + requestPath + body
 }
 
 /*
- struct convert json string
+struct convert json string
 */
 func Struct2JsonString(raw interface{}) (jsonString string, err error) {
 	//fmt.Println("转化json,", raw)
@@ -78,12 +81,13 @@ func GzipDecode(in []byte) ([]byte, error) {
 	reader := flate.NewReader(bytes.NewReader(in))
 	defer reader.Close()
 
-	return ioutil.ReadAll(reader)
+	return io.ReadAll(reader)
 }
 
 /*
- Get a iso time
-  eg: 2018-03-16T18:02:48.284Z
+Get a iso time
+
+	eg: 2018-03-16T18:02:48.284Z
 */
 func IsoTime() string {
 	utcTime := time.Now().UTC()

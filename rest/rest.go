@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -47,7 +47,7 @@ type RESTAPIResult struct {
 }
 
 type OkxV5APIResponse struct {
-	Code string      `json:"code"`
+	Code interface{} `json:"code"`
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
 }
@@ -213,7 +213,7 @@ func (this *RESTAPI) Run(ctx context.Context) (res *RESTAPIResult, err error) {
 
 	res.ReqUsedTime = time.Since(procStart)
 
-	resBuff, err := ioutil.ReadAll(resp.Body)
+	resBuff, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("获取请求结果失败！", err)
 		return
