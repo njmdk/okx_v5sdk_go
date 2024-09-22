@@ -35,6 +35,10 @@ func (a *WsClient) PrivBookAlgoOrder(op string, params []map[string]string, time
 /*
 订阅账户余额和持仓频道
 */
-func (a *WsClient) PrivBalAndPos(op string, params []map[string]string, timeOut ...int) (res bool, msg []*Msg, err error) {
+func (a *WsClient) PrivBalAndPos(op string, timeOut ...int) (res bool, msg []*Msg, err error) {
+	var params []map[string]string
+	arg := make(map[string]string)
+	arg["channel"] = "balance_and_position"
+	params = append(params, arg)
 	return a.PubChannel(wImpl.EVENT_BOOK_B_AND_P, op, params, timeOut...)
 }
