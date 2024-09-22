@@ -222,7 +222,7 @@ func TestPrivBalAndPos(t *testing.T) {
 	args = append(args, arg)
 
 	start := time.Now()
-	res, _, err = r.PrivBalAndPos(OP_SUBSCRIBE, args)
+	res, _, err = r.PrivBalAndPos(OP_SUBSCRIBE)
 	if res {
 		usedTime := time.Since(start)
 		fmt.Println("订阅成功！", usedTime.String())
@@ -236,7 +236,7 @@ func TestPrivBalAndPos(t *testing.T) {
 	//等待推送
 
 	start = time.Now()
-	res, _, err = r.PrivBalAndPos(OP_UNSUBSCRIBE, args)
+	res, _, err = r.PrivBalAndPos(OP_UNSUBSCRIBE)
 	if res {
 		usedTime := time.Since(start)
 		fmt.Println("取消订阅成功！", usedTime.String())
@@ -244,5 +244,4 @@ func TestPrivBalAndPos(t *testing.T) {
 		fmt.Println("取消订阅失败！", err)
 		t.Fatal("取消订阅失败！", err)
 	}
-
 }
