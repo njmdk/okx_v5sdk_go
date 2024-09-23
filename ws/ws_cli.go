@@ -55,6 +55,7 @@ type WsClient struct {
 
 	Debug       bool //控制日志输出 true:输出
 	IsConnected bool
+	lastTime    int64
 }
 
 /*
@@ -257,6 +258,7 @@ func (a *WsClient) work() {
 
 	}()
 
+	a.lastTime = time.Now().Unix()
 	ticker := time.NewTicker(10 * time.Second)
 	defer ticker.Stop()
 
@@ -264,16 +266,18 @@ func (a *WsClient) work() {
 		select {
 		case <-ticker.C: // 保持心跳
 			// go a.Ping(1000)
-			go func() {
-				_, _, err := a.Ping(1000)
-				if err != nil {
-					fmt.Println("心跳检测失败！", err)
-					a.Stop()
-					return
-				}
+			if time.Now().Unix()-a.lastTime > 30 {
+				a.lastTime = time.Now().Unix()
+				go func() {
+					_, _, err := a.Ping(1000)
+					if err != nil {
+						fmt.Println("心跳检测失败！", err)
+						a.Stop()
+						return
+					}
 
-			}()
-
+				}()
+			}
 		case <-a.quitCh: // 保持心跳
 			return
 		case data, ok := <-a.resCh: //接收到服务端发来的消息
@@ -353,8 +357,10 @@ func (a *WsClient) receive() {
 		}
 
 		//发送结果到默认消息处理通道
-
 		timestamp := time.Now()
+
+		a.lastTime = timestamp.Unix()
+
 		msg := &Msg{Timestamp: timestamp, Info: string(txtMsg)}
 
 		a.resCh <- msg
