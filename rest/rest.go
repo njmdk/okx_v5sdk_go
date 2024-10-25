@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -31,6 +32,7 @@ type APIKeyInfo struct {
 	PassPhrase string
 	SecKey     string
 	UserId     string
+	Proxy      string
 }
 
 type RESTAPIResult struct {
@@ -168,6 +170,18 @@ func (this *RESTAPI) Run(ctx context.Context) (res *RESTAPIResult, err error) {
 
 	client := &http.Client{
 		Timeout: this.Timeout,
+	}
+	if this.ApiKeyInfo.Proxy != "" {
+		proxyURL, err0 := url.Parse(this.ApiKeyInfo.Proxy)
+		if err0 == nil {
+			// 创建一个自定义的 Transport，设置代理
+			transport := &http.Transport{
+				Proxy: http.ProxyURL(proxyURL),
+			}
+			client.Transport = transport
+		} else {
+			fmt.Println("代理解析错误", err0, this.ApiKeyInfo.Proxy)
+		}
 	}
 
 	uri, body, err := this.GenReqInfo()
