@@ -32,6 +32,7 @@ const (
 	EVENT_BOOK_OPEN_INTEREST
 	EVENT_BOOK_KLINE
 	EVENT_BOOK_TRADE
+	EVENT_BOOK_TRADE_ALL
 	EVENT_BOOK_ESTIMATE_PRICE
 	EVENT_BOOK_MARK_PRICE
 	EVENT_BOOK_MARK_PRICE_CANDLE_CHART
@@ -89,6 +90,7 @@ var EVENT_TABLE = [][]interface{}{
 	{EVENT_BOOK_OPEN_INTEREST, "持仓总量", "open-interest"},
 	{EVENT_BOOK_KLINE, "K线", "candle"},
 	{EVENT_BOOK_TRADE, "交易", "trades"},
+	{EVENT_BOOK_TRADE_ALL, "全部交易", "trades-all"},
 	{EVENT_BOOK_ESTIMATE_PRICE, "预估交割/行权价格", "estimated-price"},
 	{EVENT_BOOK_MARK_PRICE, "标记价格", "mark-price"},
 	{EVENT_BOOK_MARK_PRICE_CANDLE_CHART, "标记价格K线", "mark-price-candle"},
